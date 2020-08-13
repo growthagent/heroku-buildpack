@@ -77,7 +77,7 @@ echo "-----> Creating asdf .profile.d script"
 ASDF_REL_DIR="$(realpath --relative-to="$BUILD_DIR" "$ASDF_DIR")"
 mkdir -p "$BUILD_DIR/.profile.d"
 cat << EOF > "$BUILD_DIR/.profile.d/instateam-asdf.sh"
-# add asdf to stuff to \$PATH
+# add asdf dirs to \$PATH
 export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
 
 # source asdf
