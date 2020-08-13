@@ -3,7 +3,7 @@ add_install_asdf_plugin() {
   local repo=${2:-}
   if ! asdf plugin list | grep $plugin; then
     echo "-----> Adding asdf $plugin"
-    asdf plugin add \$plugin $repo
+    asdf plugin add $plugin $repo
   else
     echo "-----> Updating asdf plugin $plugin"
     asdf plugin update $plugin
