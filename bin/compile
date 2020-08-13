@@ -77,7 +77,16 @@ echo "-----> Creating asdf .profile.d script"
 ASDF_REL_DIR="$(realpath --relative-to="$BUILD_DIR" "$ASDF_DIR")"
 mkdir -p "$BUILD_DIR/.profile.d"
 cat << EOF > "$BUILD_DIR/.profile.d/instateam-asdf.sh"
-export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
+# export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
+. \$HOME/${ASDF_REL_DIR}/asdf.sh
+
+if command -v asdf > /dev/null 2>&1; then
+  asdf plugin update --all
+  asdf install
+else
+  echo "asdf not installed 🤔"
+  exit 1
+fi
 
 # bash completions for debugging
 [ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
