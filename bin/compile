@@ -63,11 +63,13 @@ cp -Trf "$ASDF_DIR" "$ASDF_CACHE/"
 echo "-----> Creating asdf .profile.d script"
 ASDF_REL_DIR="$(realpath --relative-to="$BUILD_DIR" "$ASDF_DIR")"
 mkdir -p "$BUILD_DIR/.profile.d"
-cat << EOF > "$BUILD_DIR/.profile.d/instateam-asdf.sh"
+cat << EOF > "$BUILD_DIR/.profile.d/asdf.sh"
 # add asdf dirs to \$PATH
 export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
 
-# source asdf
+# bash completions for debugging
+[ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
+
 . \$HOME/${ASDF_REL_DIR}/asdf.sh
 
 # verify it’s installed and reinstall missing plugins
@@ -80,9 +82,6 @@ $(cat $BP_DIR/lib/asdf-plugins.sh)
 
 asdf install
 asdf reshim
-
-# bash completions for debugging
-[ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
 EOF
 
 if [ -w "$BP_DIR" ]; then
