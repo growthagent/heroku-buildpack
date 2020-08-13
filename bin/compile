@@ -48,20 +48,7 @@ else
   echo "-----> Using asdf v${ASDF_VERSION}"
 fi
 
-add_install_asdf_plugin() {
-  local plugin="$1"
-  local repo=${2:-}
-  if ! asdf plugin list | grep $plugin; then
-    echo "-----> Adding asdf $plugin"
-    asdf plugin add $plugin $repo | indent
-  else
-    echo "-----> Updating asdf plugin $plugin"
-    asdf plugin update $plugin | indent
-  fi
-}
-
-add_install_asdf_plugin "dhall"
-add_install_asdf_plugin "purescript-zephyr" "https://github.com/instateam/asdf-purescript-zephyr.git"
+source $BP_DIR/lib/asdf-plugins.sh
 
 echo "-----> Install asdf plugins"
 if ! [ -f ".tool-versions" ] && [ -f "$BUILD_DIR/.tool-versions" ]; then
@@ -84,28 +71,15 @@ export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
 . \$HOME/${ASDF_REL_DIR}/asdf.sh
 
 # verify it’s installed and reinstall missing plugins
-if command -v asdf > /dev/null 2>&1; then
-  add_install_asdf_plugin() {
-    local plugin="\$1"
-    local repo=\${2:-}
-    if ! asdf plugin list | grep \$plugin; then
-      echo "-----> Adding asdf \$plugin"
-      asdf plugin add \$plugin \$repo
-    else
-      echo "-----> Updating asdf plugin \$plugin"
-      asdf plugin update \$plugin
-    fi
-  }
-
-  add_install_asdf_plugin "dhall"
-  add_install_asdf_plugin "purescript-zephyr" "https://github.com/instateam/asdf-purescript-zephyr.git"
-
-  asdf install
-  asdf reshim
-else
+if ! command -v asdf > /dev/null 2>&1; then
   echo "asdf not installed 🤔"
   exit 1
 fi
+
+$(cat $BP_DIR/lib/asdf-plugins.sh)
+
+asdf install
+asdf reshim
 
 # bash completions for debugging
 [ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
