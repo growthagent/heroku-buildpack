@@ -18,10 +18,10 @@ starz() {
 
 ASDF_DIR="$BUILD_DIR/.asdf"
 ASDF_CACHE_DIR="$CACHE_DIR/asdf"
-ASDF_VERSION=${ASDF_VERSION:-'0.7.8'}
 if [ -f "$BUILD_DIR/.tool-versions" ]; then
   ASDF_VERSION="$(awk -F ' ' '{ if (match($1, "asdf")) {print $2} }' $BUILD_DIR/.tool-versions)"
 fi
+ASDF_VERSION=${ASDF_VERSION:-'0.7.8'}
 
 mkdir -p "$ASDF_DIR" "$ASDF_CACHE_DIR"
 
