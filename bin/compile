@@ -47,11 +47,11 @@ else
 fi
 
 echo "command -v asdf: $(command -v asdf)"
+echo "asdf -v: $(asdf --version | awk -F'-' '{print $1}')"
+echo "ASDF_V: ${ASDF_VERSION}"
 starz
 
-echo "ls ASDF_DIR"
-ls $ASDF_DIR
-starz
+
 
 
 # if missing/fresh or we sourced asdf’s shell script, and we don’t have an asdf, time to (re)install
