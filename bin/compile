@@ -12,6 +12,10 @@ indent() {
   sed -u 's/^/       /'
 }
 
+starz() {
+  echo "******************************************************"
+}
+
 ASDF_DIR="$BUILD_DIR/.asdf"
 ASDF_CACHE_DIR="$CACHE_DIR/asdf"
 ASDF_VERSION=${ASDF_VERSION:-'0.7.8'}
@@ -21,10 +25,16 @@ fi
 
 mkdir -p "$CACHE_DIR" "$ASDF_DIR"
 
+echo "ls ASDF_CACHE"
+ls $ASDF_CACHE
+echo "ls ASDF_DIR"
+ls $ASDF_DIR
+starz
+
 # Copying from cache
 if [ -d "$ASDF_CACHE_DIR" ]; then
-  if [ -f "${ASDF_CACHE_DIR}/asdf.sh" ]; then
-    echo "-----> Copying asdf cache"
+  if [ -f "${ASDF_CACHE_DIR}/asdf.sh" -a -x "${ASDF_CACHE_DIR}/bin/asdf" ]; then
+    echo "-----> Copying and sourcing asdf cache"
     cp -Trf "$ASDF_CACHE_DIR" "${ASDF_DIR}/"
     . "${ASDF_DIR}/asdf.sh"
   else
@@ -36,11 +46,21 @@ else
   mkdir -p "$ASDF_CACHE_DIR"
 fi
 
+echo "command -v asdf: $(command -v asdf)"
+starz
+
+echo "ls ASDF_DIR"
+ls $ASDF_DIR
+starz
+
+
+# if missing/fresh or we sourced asdf’s shell script, and we don’t have an asdf, time to (re)install
 if ! [ -x "$(command -v asdf)" ]; then
   echo "-----> Installing asdf v${ASDF_VERSION}"
+  rm -rf "$ASDF_DIR"
   git clone --quiet --depth=1 https://github.com/asdf-vm/asdf.git "$ASDF_DIR" --branch "v${ASDF_VERSION}" | indent
   . "$ASDF_DIR/asdf.sh"
-elif [ "$(git symbolic-ref --short HEAD | sed -e 's/^v//i')" != "${ASDF_VERSION}" ] ; then
+elif [ "$(git symbolic-ref --short HEAD)" != "v${ASDF_VERSION}" ] ; then
   echo "-----> Switching to asdf v${ASDF_VERSION}"
   cd "$ASDF_DIR"
   git checkout "v${ASDF_VERSION}" | indent
@@ -73,7 +93,7 @@ export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
 
 . \$HOME/${ASDF_REL_DIR}/asdf.sh
 
-# verify it’s installed and reinstall missing plugins
+# verify asdf is installed and reinstall missing plugins
 if ! command -v asdf > /dev/null 2>&1; then
   echo "asdf not installed 🤔"
   exit 1
