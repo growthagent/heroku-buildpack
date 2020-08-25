@@ -24,7 +24,7 @@ if [ -f "$BUILD_DIR/.tool-versions" ]; then
 fi
 ASDF_VERSION=${ASDF_VERSION:-'0.7.8'}
 
-mkdir -p "$ASDF_DIR" "$ASDF_CACHE_DIR"
+mkdir -p "$ASDF_DIR"
 
 # Copying from cache
 if [ -d "$ASDF_CACHE_DIR" ]; then
@@ -41,10 +41,7 @@ else
   mkdir -p "$ASDF_CACHE_DIR"
 fi
 
-echo "command -v asdf: $(command -v asdf)"
-echo "asdf -v: $(asdf --version | awk -F'-' '{print $1}')"
-echo "ASDF_V: ${ASDF_VERSION}"
-starz
+export ASDF_DATA_DIR="$ASDF_DIR"
 
 # if missing/fresh or we sourced asdf’s shell script, and we don’t have an asdf, time to (re)install
 if [ -z "$(command -v asdf)" -o "$(asdf --version | awk -F'-' '{print $1}')" != "v${ASDF_VERSION}" ]; then
@@ -59,7 +56,7 @@ fi
 source $BP_DIR/lib/asdf-plugins.sh
 
 # TODO: delete
-echo "ls ASDF_DIR"
+echo "ls ASDF_CACHE_DIR"
 ls "${ASDF_DIR}"
 if [ -d "${ASDF_DIR}/installs" ]; then
   echo "ls installs"
@@ -125,11 +122,12 @@ mkdir -p "$BUILD_DIR/.profile.d"
 cat << EOF > "$BUILD_DIR/.profile.d/asdf.sh"
 # add asdf dirs to \$PATH
 export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
+export ASDF_DATA_DIR="\$HOME/${ASDF_REL_DIR}"
 
 # bash completions for debugging
 [ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
 
-. \$HOME/${ASDF_REL_DIR}/asdf.sh
+. \$ASDF_DATA_DIR/asdf.sh
 
 # verify asdf is installed and reinstall missing plugins
 if ! command -v asdf > /dev/null 2>&1; then
