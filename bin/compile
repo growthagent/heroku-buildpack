@@ -60,10 +60,18 @@ source $BP_DIR/lib/asdf-plugins.sh
 
 echo "ls ASDF_DIR"
 ls "${ASDF_DIR}"
-echo "ls installs"
-ls "${ASDF_DIR}/installs"
-echo "ls plugins"
-ls "${ASDF_DIR}/plugins"
+if [ -d "${ASDF_DIR}/installs" ]; then
+  echo "ls installs"
+  ls "${ASDF_DIR}/installs"
+else
+  echo "no installs"
+fi
+if [ -d "${ASDF_DIR}/plugins" ]; then
+  echo "ls plugins"
+  ls "${ASDF_DIR}/plugins"
+else
+  echo "no plugins"
+fi
 starz
 
 
