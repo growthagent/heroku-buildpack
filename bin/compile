@@ -58,12 +58,14 @@ source $BP_DIR/lib/asdf-plugins.sh
 # TODO: delete
 echo "ls ASDF_CACHE_DIR"
 ls "${ASDF_DIR}"
+echo -n ">>>"
 if [ -d "${ASDF_DIR}/installs" ]; then
   echo "ls installs"
   ls "${ASDF_DIR}/installs"
 else
   echo "no installs"
 fi
+echo -n ">>>"
 if [ -d "${ASDF_DIR}/plugins" ]; then
   echo "ls plugins"
   ls "${ASDF_DIR}/plugins"
@@ -100,14 +102,16 @@ else
 fi
 starz
 # TODO: delete
-echo "ls ASDF_DIR"
+echo "ls ASDF_CACHE_DIR"
 ls "${ASDF_CACHE_DIR}"
+echo -n ">>>"
 if [ -d "${ASDF_CACHE_DIR}/installs" ]; then
   echo "ls installs"
   ls "${ASDF_CACHE_DIR}/installs"
 else
   echo "no installs"
 fi
+echo -n ">>>"
 if [ -d "${ASDF_CACHE_DIR}/plugins" ]; then
   echo "ls plugins"
   ls "${ASDF_DIR}/plugins"
@@ -127,7 +131,7 @@ export ASDF_DATA_DIR="\$HOME/${ASDF_REL_DIR}"
 # bash completions for debugging
 [ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
 
-. \$ASDF_DATA_DIR/asdf.sh
+. \$HOME/${ASDF_REL_DIR}/asdf.sh
 
 # verify asdf is installed and reinstall missing plugins
 if ! command -v asdf > /dev/null 2>&1; then
