@@ -58,6 +58,7 @@ fi
 
 source $BP_DIR/lib/asdf-plugins.sh
 
+# TODO: delete
 echo "ls ASDF_DIR"
 ls "${ASDF_DIR}"
 if [ -d "${ASDF_DIR}/installs" ]; then
@@ -85,12 +86,37 @@ asdf install | indent
 echo "-----> Coping asdf over to cache"
 cp -Trf "$ASDF_DIR" "$ASDF_CACHE_DIR/"
 
-echo "ls ASDF_CHACHE_DIR"
+# TODO: delete
+echo "ls ASDF_DIR"
+ls "${ASDF_DIR}"
+if [ -d "${ASDF_DIR}/installs" ]; then
+  echo "ls installs"
+  ls "${ASDF_DIR}/installs"
+else
+  echo "no installs"
+fi
+if [ -d "${ASDF_DIR}/plugins" ]; then
+  echo "ls plugins"
+  ls "${ASDF_DIR}/plugins"
+else
+  echo "no plugins"
+fi
+starz
+# TODO: delete
+echo "ls ASDF_DIR"
 ls "${ASDF_CACHE_DIR}"
-echo "ls installs"
-ls "${ASDF_CACHE_DIR}/installs"
-echo "ls plugins"
-ls "${ASDF_CACHE_DIR}/plugins"
+if [ -d "${ASDF_CACHE_DIR}/installs" ]; then
+  echo "ls installs"
+  ls "${ASDF_CACHE_DIR}/installs"
+else
+  echo "no installs"
+fi
+if [ -d "${ASDF_CACHE_DIR}/plugins" ]; then
+  echo "ls plugins"
+  ls "${ASDF_DIR}/plugins"
+else
+  echo "no plugins"
+fi
 starz
 
 echo "-----> Creating asdf .profile.d script"
