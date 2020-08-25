@@ -55,18 +55,20 @@ starz
 
 
 # if missing/fresh or we sourced asdf’s shell script, and we don’t have an asdf, time to (re)install
-if ! [ -x "$(command -v asdf)" ]; then
+if [ -z "$(command -v asdf)" -a -z "$(asdf --version)" ]; then
   echo "-----> Installing asdf v${ASDF_VERSION}"
   rm -rf "$ASDF_DIR"
   git clone --quiet --depth=1 https://github.com/asdf-vm/asdf.git "$ASDF_DIR" --branch "v${ASDF_VERSION}" | indent
   . "$ASDF_DIR/asdf.sh"
-elif [ "$(git symbolic-ref --short HEAD)" != "v${ASDF_VERSION}" ] ; then
-  echo "-----> Switching to asdf v${ASDF_VERSION}"
-  cd "$ASDF_DIR"
-  git checkout "v${ASDF_VERSION}" | indent
-  cd "$BUILD_DIR"
 else
-  echo "-----> Using asdf v${ASDF_VERSION}"
+  cd "$ASDF_DIR"
+  if [ "$(git symbolic-ref --short HEAD)" != "v${ASDF_VERSION}" ] ; then
+    echo "-----> Switching to asdf v${ASDF_VERSION}"
+    git checkout "v${ASDF_VERSION}" | indent
+  else
+    echo "-----> Using asdf v${ASDF_VERSION}"
+  fi
+  cd "$BUILD_DIR"
 fi
 
 source $BP_DIR/lib/asdf-plugins.sh
