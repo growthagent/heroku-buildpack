@@ -55,7 +55,7 @@ starz
 
 
 # if missing/fresh or we sourced asdf’s shell script, and we don’t have an asdf, time to (re)install
-if [ -z "$(command -v asdf)" -o "$(asdf --version | awk -F'-' '{print $1')" != "v${ASDF_VERSION}" ]; then
+if [ -z "$(command -v asdf)" -o "$(asdf --version | awk -F'-' '{print $1}')" != "v${ASDF_VERSION}" ]; then
   echo "-----> Installing asdf v${ASDF_VERSION}"
   rm -rf "$ASDF_DIR"
   git clone --quiet --depth=1 https://github.com/asdf-vm/asdf.git "$ASDF_DIR" --branch "v${ASDF_VERSION}" | indent
