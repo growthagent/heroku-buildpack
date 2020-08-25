@@ -38,7 +38,7 @@ if [ -d "$ASDF_CACHE_DIR" ]; then
     cp -Trf "$ASDF_CACHE_DIR" "${ASDF_DIR}/"
     . "${ASDF_DIR}/asdf.sh"
   else
-    echo "-----> Missing scripts or different versions in asdf cache; removing"
+    echo "-----> Fresh state, missing scripts, or different versions in asdf cache; removing"
     rm -rf "$ASDF_CACHE_DIR"
     mkdir -p "$ASDF_CACHE_DIR"
   fi
@@ -79,7 +79,7 @@ fi
 asdf install | indent
 
 echo "-----> Coping asdf over to cache"
-cp -Trf "$ASDF_DIR" "$ASDF_CACHE/"
+cp -Trf "$ASDF_DIR" "$ASDF_CACHE_DIR/"
 
 echo "-----> Creating asdf .profile.d script"
 ASDF_REL_DIR="$(realpath --relative-to="$BUILD_DIR" "$ASDF_DIR")"
