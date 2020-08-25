@@ -23,10 +23,10 @@ if [ -f "$BUILD_DIR/.tool-versions" ]; then
   ASDF_VERSION="$(awk -F ' ' '{ if (match($1, "asdf")) {print $2} }' $BUILD_DIR/.tool-versions)"
 fi
 
-mkdir -p "$CACHE_DIR" "$ASDF_DIR"
+mkdir -p "$ASDF_DIR" "$ASDF_CACHE_DIR"
 
-echo "ls ASDF_CACHE"
-ls $ASDF_CACHE
+echo "ls ASDF_CACHE_DIR"
+ls $ASDF_CACHE_DIR
 echo "ls ASDF_DIR"
 ls $ASDF_DIR
 starz
