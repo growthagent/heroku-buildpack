@@ -13,6 +13,7 @@ indent() {
 }
 
 starz() {
+  # TODO: delete
   echo "******************************************************"
 }
 
@@ -24,12 +25,6 @@ fi
 ASDF_VERSION=${ASDF_VERSION:-'0.7.8'}
 
 mkdir -p "$ASDF_DIR" "$ASDF_CACHE_DIR"
-
-echo "ls ASDF_CACHE_DIR"
-ls $ASDF_CACHE_DIR
-echo "ls ASDF_DIR"
-ls $ASDF_DIR
-starz
 
 # Copying from cache
 if [ -d "$ASDF_CACHE_DIR" ]; then
@@ -51,9 +46,6 @@ echo "asdf -v: $(asdf --version | awk -F'-' '{print $1}')"
 echo "ASDF_V: ${ASDF_VERSION}"
 starz
 
-
-
-
 # if missing/fresh or we sourced asdf’s shell script, and we don’t have an asdf, time to (re)install
 if [ -z "$(command -v asdf)" -o "$(asdf --version | awk -F'-' '{print $1}')" != "v${ASDF_VERSION}" ]; then
   echo "-----> Installing asdf v${ASDF_VERSION}"
@@ -66,6 +58,15 @@ fi
 
 source $BP_DIR/lib/asdf-plugins.sh
 
+echo "ls ASDF_DIR"
+ls "${ASDF_DIR}"
+echo "ls installs"
+ls "${ASDF_DIR}/installs"
+echo "ls plugins"
+ls "${ASDF_DIR}/plugins"
+starz
+
+
 echo "-----> Install asdf plugins"
 if ! [ -f ".tool-versions" ] && [ -f "$BUILD_DIR/.tool-versions" ]; then
   echo "cp" | indent
@@ -75,6 +76,14 @@ asdf install | indent
 
 echo "-----> Coping asdf over to cache"
 cp -Trf "$ASDF_DIR" "$ASDF_CACHE_DIR/"
+
+echo "ls ASDF_CHACHE_DIR"
+ls "${ASDF_CACHE_DIR}"
+echo "ls installs"
+ls "${ASDF_CACHE_DIR}/installs"
+echo "ls plugins"
+ls "${ASDF_CACHE_DIR}/plugins"
+starz
 
 echo "-----> Creating asdf .profile.d script"
 ASDF_REL_DIR="$(realpath --relative-to="$BUILD_DIR" "$ASDF_DIR")"
