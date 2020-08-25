@@ -19,6 +19,9 @@ starz() {
 
 export ASDF_DIR="$BUILD_DIR/.asdf"
 export ASDF_DATA_DIR="$ASDF_DIR"
+echo $ASDF_DIR
+echo $ASDF_DATA_DIR
+starz
 ASDF_CACHE_DIR="$CACHE_DIR/asdf"
 if [ -f "$BUILD_DIR/.tool-versions" ]; then
   ASDF_VERSION="$(awk -F ' ' '{ if (match($1, "asdf")) {print $2} }' $BUILD_DIR/.tool-versions)"
