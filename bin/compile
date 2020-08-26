@@ -60,14 +60,14 @@ source $BP_DIR/lib/asdf-plugins.sh
 # TODO: delete
 echo "ls ASDF_CACHE_DIR"
 ls "${ASDF_DIR}"
-echo -n ">>>"
+echo -n ">>> "
 if [ -d "${ASDF_DIR}/installs" ]; then
   echo "ls installs"
   ls "${ASDF_DIR}/installs"
 else
   echo "no installs"
 fi
-echo -n ">>>"
+echo -n ">>> "
 if [ -d "${ASDF_DIR}/plugins" ]; then
   echo "ls plugins"
   ls "${ASDF_DIR}/plugins"
@@ -84,18 +84,31 @@ if ! [ -f ".tool-versions" ] && [ -f "$BUILD_DIR/.tool-versions" ]; then
 fi
 asdf install | indent
 
-echo "-----> Coping asdf over to cache"
-cp -Trf "$ASDF_DIR" "$ASDF_CACHE_DIR/"
-
 # TODO: delete
 echo "ls ASDF_DIR"
 ls "${ASDF_DIR}"
+echo -n ">>> "
 if [ -d "${ASDF_DIR}/installs" ]; then
   echo "ls installs"
   ls "${ASDF_DIR}/installs"
 else
   echo "no installs"
 fi
+echo -n ">>> "
+if [ -d "${ASDF_DIR}/installs/dhall" ]; then
+  echo "ls installs/dhall"
+  ls "${ASDF_DIR}/installs/dhall"
+else
+  echo "no installs/dhall"
+fi
+echo -n ">>> "
+if [ -d "${ASDF_DIR}/installs/dhall/1.34.0/bin" ]; then
+  echo "ls installs/dhall/1.34.0/bin"
+  ls "${ASDF_DIR}/installs/dhall/1.34.0/bin"
+else
+  echo "no installs/dhall/1.34.0/bin"
+fi
+echo -n ">>> "
 if [ -d "${ASDF_DIR}/plugins" ]; then
   echo "ls plugins"
   ls "${ASDF_DIR}/plugins"
@@ -103,17 +116,28 @@ else
   echo "no plugins"
 fi
 starz
+
+echo "-----> Coping asdf over to cache"
+cp -Trf "$ASDF_DIR" "$ASDF_CACHE_DIR/"
+
 # TODO: delete
 echo "ls ASDF_CACHE_DIR"
 ls "${ASDF_CACHE_DIR}"
-echo -n ">>>"
+echo -n ">>> "
 if [ -d "${ASDF_CACHE_DIR}/installs" ]; then
   echo "ls installs"
   ls "${ASDF_CACHE_DIR}/installs"
 else
   echo "no installs"
 fi
-echo -n ">>>"
+echo -n ">>> "
+if [ -d "${ASDF_CACHE_DIR}/installs/dhall/1.34.0/bin" ]; then
+  echo "ls installs/dhall/1.34.0/bin"
+  ls "${ASDF_CACHE_DIR}/installs/dhall/1.34.0/bin"
+else
+  echo "no installs/dhall/1.34.0/bin"
+fi
+echo -n ">>> "
 if [ -d "${ASDF_CACHE_DIR}/plugins" ]; then
   echo "ls plugins"
   ls "${ASDF_DIR}/plugins"
