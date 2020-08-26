@@ -54,10 +54,6 @@ declare -r -A asdf_plugins=(
   [purescript-zephyr]="https://github.com/instateam/asdf-purescript-zephyr.git"
 )
 
-echo "${asdf_plugins[@]}"
-echo "${!asdf_plugins[@]}"
-asdf --version
-
 for plugin in "${!asdf_plugins[@]}"; do
   if [ -z "$(asdf plugin list | grep -x "$plugin")" ]; then
     echo "-----> Adding asdf $plugin"
