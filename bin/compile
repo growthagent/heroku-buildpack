@@ -74,7 +74,9 @@ echo "-----> Install asdf plugins"
 asdf install | indent
 
 echo "-----> Coping asdf over to cache"
-cp -Trf "$ASDF_DIR" "$ASDF_CACHE_DIR/"
+# we need to reshim later as the paths are pointing to the temp build dir
+rm -rf "${ASDF_DIR}/shims"
+cp -Trf "$ASDF_DIR" "${ASDF_CACHE_DIR}/"
 
 echo "-----> Creating asdf .profile.d script"
 ASDF_REL_DIR="$(realpath --relative-to="$BUILD_DIR" "$ASDF_DIR")"
