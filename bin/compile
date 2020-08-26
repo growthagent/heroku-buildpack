@@ -184,8 +184,8 @@ else
 fi
 starz
 
-declare -r -a asdf_profiled_where_bins
-declare -r -a asdf_export_where_bins
+declare -a asdf_profiled_where_bins
+declare -a asdf_export_where_bins
 for plugin in ${!asdf_plugins[@]}; do
   where_bin="$(asdf where "$plugin")/bin"
   asdf_profiled_where_bins+=("\$HOME/$(realpath --relative-to="$BUILD_DIR" "$where_bin")")
