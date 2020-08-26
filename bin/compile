@@ -98,6 +98,8 @@ fi
 # bash completions for debugging
 [ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
 
+# make sure we start shims fresh
+rm -rf "\$HOME/${ASDF_REL_DIR}/shims"
 asdf install
 asdf reshim
 EOF
@@ -110,6 +112,7 @@ export ASDF_DIR="${ASDF_DIR}"
 export ASDF_DATA_DIR="${ASDF_DIR}"
 export PATH="${ASDF_DIR}/shims:${ASDF_DIR}/bin:\$PATH"
 . "${ASDF_DIR}/asdf.sh"
+asdf reshim
 EOF
 fi
 
