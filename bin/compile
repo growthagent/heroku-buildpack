@@ -58,7 +58,7 @@ echo "${asdf_plugins[@]}"
 echo "${!asdf_plugins[@]}"
 
 for plugin in "${!asdf_plugins[@]}"; do
-  asdf_plugin_list="$(asdf_plugin_list 2> /dev/null)" || ""
+  asdf_plugin_list="$(asdf plugin list 2> /dev/null)" || ""
   echo $asdf_plugin_list
   echo
   echo "$(grep -x "$plugin" <<< "$asdf_plugin_list")"
