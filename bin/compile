@@ -60,7 +60,11 @@ echo "${!asdf_plugins[@]}"
 for plugin in "${!asdf_plugins[@]}"; do
   asdf plugin list
   echo
-  if [ -z "$(asdf plugin list | grep -w "${plugin}\$")" ]; then
+  echo "$(asdf plugin list | grep -w "^${plugin}\$")"
+  echo
+  echo "${asdf_plugins[$plugin]}"
+  echo
+  if [ -z "$(asdf plugin list | grep -w "^${plugin}\$")" ]; then
     echo "-----> Adding asdf $plugin"
     repo="${asdf_plugins[$plugin]}"
     asdf plugin add "$plugin" "$repo" | indent
