@@ -48,6 +48,11 @@ else
   asdf reshim
 fi
 
+if ! [ -f "\$PWD/.tool-versions" ] && [ -f "$BUILD_DIR/.tool-versions" ]; then
+  echo "cp .tool-versions" | indent
+  cp "$BUILD_DIR/.tool-versions" .
+fi
+
 # ([plugin]=repo)
 declare -r -A asdf_plugins=(
   [dhall]=""
@@ -66,10 +71,6 @@ for plugin in "${!asdf_plugins[@]}"; do
 done
 
 echo "-----> Install asdf plugins"
-if ! [ -f "\$PWD/.tool-versions" ] && [ -f "$BUILD_DIR/.tool-versions" ]; then
-  echo "cp" | indent
-  cp "$BUILD_DIR/.tool-versions" .
-fi
 asdf install | indent
 
 echo "-----> Coping asdf over to cache"
@@ -84,7 +85,7 @@ export ASDF_DIR="\$HOME/${ASDF_REL_DIR}"
 export ASDF_DATA_DIR="\$HOME/${ASDF_REL_DIR}"
 export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
 
-. "\$HOME/\${ASDF_REL_DIR}/asdf.sh"
+. "\$HOME/${ASDF_REL_DIR}/asdf.sh"
 
 # verify asdf is installed and reinstall missing plugins
 if ! command -v asdf > /dev/null 2>&1; then
