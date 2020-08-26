@@ -197,8 +197,8 @@ ASDF_REL_DIR="$(realpath --relative-to="$BUILD_DIR" "$ASDF_DIR")"
 mkdir -p "$BUILD_DIR/.profile.d"
 cat << EOF > "$BUILD_DIR/.profile.d/asdf.sh"
 # add asdf dirs to \$PATH
-#export ASDF_DIR="\$HOME/${ASDF_REL_DIR}"
-#export ASDF_DATA_DIR="\$HOME/${ASDF_REL_DIR}"
+export ASDF_DIR="\$HOME/${ASDF_REL_DIR}"
+export ASDF_DATA_DIR="\$HOME/${ASDF_REL_DIR}"
 export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
 
 . "\$HOME/\${ASDF_REL_DIR}/asdf.sh"
@@ -221,7 +221,9 @@ EOF
 if [ -w "$BP_DIR" ]; then
   echo "-----> Creating asdf export script"
   cat << EOF > "${BP_DIR}/export"
-export PATH=\"${ASDF_DIR}/shims:${ASDF_DIR}/bin:\$PATH\"
+export ASDF_DIR="${ASDF_DIR}"
+export ASDF_DATA_DIR="${ASDF_DIR}"
+export PATH="${ASDF_DIR}/shims:${ASDF_DIR}/bin:\$PATH"
 . "${ASDF_DIR}/asdf.sh"
 EOF
   cat "${BP_DIR}/export"
