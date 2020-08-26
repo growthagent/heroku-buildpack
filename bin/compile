@@ -174,21 +174,21 @@ cat << EOF > "$BUILD_DIR/.profile.d/asdf.sh"
 export ASDF_DIR="\$HOME/${ASDF_REL_DIR}"
 export ASDF_DATA_DIR="\$HOME/${ASDF_REL_DIR}"
 export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
+
+. "\$HOME/\${ASDF_REL_DIR}/asdf.sh"
+
+# verify asdf is installed and reinstall missing plugins
+if ! command -v asdf > /dev/null 2>&1; then
+  echo "asdf not installed 🤔"
+  exit 1
+fi
+
+# bash completions for debugging
+[ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
+
+asdf reshim
 EOF
-#
-## bash completions for debugging
-#[ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
-#
-#. "\$HOME/\${ASDF_REL_DIR}/asdf.sh"
-#EOF
-#
-#
-## verify asdf is installed and reinstall missing plugins
-#if ! command -v asdf > /dev/null 2>&1; then
-#  echo "asdf not installed 🤔"
-#  exit 1
-#fi
-#
+
 #$(cat $BP_DIR/lib/asdf-plugins.sh)
 #
 #asdf install
