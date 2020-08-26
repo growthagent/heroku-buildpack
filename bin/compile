@@ -17,7 +17,7 @@ starz() {
   echo "******************************************************"
 }
 
-export ASDF_DIR="$BUILD_DIR/.asdf"
+export ASDF_DIR="$BUILD_DIR/.heroku/asdf"
 export ASDF_DATA_DIR="$ASDF_DIR"
 echo $ASDF_DIR
 echo $ASDF_DATA_DIR
@@ -55,6 +55,7 @@ else
   echo "-----> Using asdf v${ASDF_VERSION}"
 fi
 
+export PATH="$PATH"
 source $BP_DIR/lib/asdf-plugins.sh
 
 # TODO: delete
@@ -165,30 +166,34 @@ ASDF_REL_DIR="$(realpath --relative-to="$BUILD_DIR" "$ASDF_DIR")"
 mkdir -p "$BUILD_DIR/.profile.d"
 cat << EOF > "$BUILD_DIR/.profile.d/asdf.sh"
 # add asdf dirs to \$PATH
-export ASDF_DIR="\\\$HOME/${ASDF_REL_DIR}"
-export ASDF_DATA_DIR="\\\$HOME/${ASDF_REL_DIR}"
-export PATH="\\\$HOME/${ASDF_REL_DIR}/shims:\\\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
-
-# bash completions for debugging
-[ -z "\$BASH_VERSION" ] && . \\\$HOME/${ASDF_REL_DIR}/completions/asdf.bash
-
-. "\$ASDF_REL_DIR/asdf.sh"
-
-# verify asdf is installed and reinstall missing plugins
-if ! command -v asdf > /dev/null 2>&1; then
-  echo "asdf not installed 🤔"
-  exit 1
-fi
-
-$(cat $BP_DIR/lib/asdf-plugins.sh)
-
-asdf install
-asdf reshim
+export ASDF_DIR="\$HOME/${ASDF_REL_DIR}"
+export ASDF_DATA_DIR="\$HOME/${ASDF_REL_DIR}"
+export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
 EOF
+#
+## bash completions for debugging
+#[ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
+#
+#. "\$HOME/\${ASDF_REL_DIR}/asdf.sh"
+#EOF
+#
+#
+## verify asdf is installed and reinstall missing plugins
+#if ! command -v asdf > /dev/null 2>&1; then
+#  echo "asdf not installed 🤔"
+#  exit 1
+#fi
+#
+#$(cat $BP_DIR/lib/asdf-plugins.sh)
+#
+#asdf install
+#asdf reshim
+#EOF
 
 if [ -w "$BP_DIR" ]; then
   echo "-----> Creating asdf export script"
-  echo "export PATH=\"\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH\"" > "${BP_DIR}/export"
+  echo "export PATH=\"${ASDF_DIR}/shims:${ASDF_DIR}/bin:\$PATH\"" > "${BP_DIR}/export"
+  cat "${BP_DIR}/export"
 fi
 
 exit 0
