@@ -165,12 +165,12 @@ ASDF_REL_DIR="$(realpath --relative-to="$BUILD_DIR" "$ASDF_DIR")"
 mkdir -p "$BUILD_DIR/.profile.d"
 cat << EOF > "$BUILD_DIR/.profile.d/asdf.sh"
 # add asdf dirs to \$PATH
-export ASDF_DIR="\$HOME/${ASDF_REL_DIR}"
-export ASDF_DATA_DIR="\$HOME/${ASDF_REL_DIR}"
-export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
+export ASDF_DIR="\\\$HOME/${ASDF_REL_DIR}"
+export ASDF_DATA_DIR="\\\$HOME/${ASDF_REL_DIR}"
+export PATH="\\\$HOME/${ASDF_REL_DIR}/shims:\\\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
 
 # bash completions for debugging
-[ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
+[ -z "\$BASH_VERSION" ] && . \\\$HOME/${ASDF_REL_DIR}/completions/asdf.bash
 
 . "\$ASDF_REL_DIR/asdf.sh"
 
