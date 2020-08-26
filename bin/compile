@@ -53,6 +53,7 @@ if [ -z "$(command -v asdf)" -o "$(asdf --version | awk -F '-' '{print $1}')" !=
   . "$ASDF_DIR/asdf.sh"
 else
   echo "-----> Using asdf v${ASDF_VERSION}"
+  asdf reshim
 fi
 
 export PATH="$PATH"
@@ -116,6 +117,10 @@ if [ -d "${ASDF_DIR}/plugins" ]; then
 else
   echo "no plugins"
 fi
+starz
+
+echo "dhall version"
+${ASDF_DIR}/shims/dhall --version
 starz
 
 echo "-----> Coping asdf over to cache"
