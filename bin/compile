@@ -16,7 +16,7 @@ export ASDF_DIR="$BUILD_DIR/.heroku/asdf"
 export ASDF_DATA_DIR="$ASDF_DIR"
 ASDF_CACHE_DIR="$CACHE_DIR/asdf"
 if [ -f "$BUILD_DIR/.tool-versions" ]; then
-  ASDF_VERSION="$(awk -F ' ' '{ if (match($1, "asdf")) {print $2} }' $BUILD_DIR/.tool-versions)"
+  ASDF_VERSION="$(awk -F ' ' '{ if (match($1, "asdf")) {print $2} }' "$BUILD_DIR/.tool-versions")"
 fi
 ASDF_VERSION=${ASDF_VERSION:-'0.7.8'}
 
@@ -54,8 +54,8 @@ declare -r -A asdf_plugins=(
   [purescript-zephyr]="https://github.com/instateam/asdf-purescript-zephyr.git"
 )
 
-echo "${asdf_plugins[@]}
-echo "${!asdf_plugins[@]}
+echo "${asdf_plugins[@]}"
+echo "${!asdf_plugins[@]}"
 
 for plugin in "${!asdf_plugins[@]}"; do
   asdf plugin list
