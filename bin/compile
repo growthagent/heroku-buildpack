@@ -56,6 +56,8 @@ declare -r -A asdf_plugins=(
 
 echo "${asdf_plugins[@]}"
 echo "${!asdf_plugins[@]}"
+asdf --version
+asdf plugin list 2> /dev/null
 
 for plugin in "${!asdf_plugins[@]}"; do
   asdf_plugin_list="$(asdf plugin list 2> /dev/null)" || ""
