@@ -199,33 +199,31 @@ cat << EOF > "$BUILD_DIR/.profile.d/asdf.sh"
 # add asdf dirs to \$PATH
 #export ASDF_DIR="\$HOME/${ASDF_REL_DIR}"
 #export ASDF_DATA_DIR="\$HOME/${ASDF_REL_DIR}"
-export PATH="$(join ":" ${asdf_profiled_where_bins[@]}):\$PATH"
+export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
+
+. "\$HOME/\${ASDF_REL_DIR}/asdf.sh"
+
+# verify asdf is installed and reinstall missing plugins
+if ! command -v asdf > /dev/null 2>&1; then
+  echo "asdf not installed 🤔"
+  exit 1
+fi
+
+# bash completions for debugging
+[ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
+
+asdf install
+asdf reshim
 EOF
-#
-#
-#. "\$HOME/\${ASDF_REL_DIR}/asdf.sh"
-#
-## verify asdf is installed and reinstall missing plugins
-#if ! command -v asdf > /dev/null 2>&1; then
-#  echo "asdf not installed 🤔"
-#  exit 1
-#fi
-#
-## bash completions for debugging
-#[ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
-#
-#asdf reshim
-#EOF
+
 #$(cat $BP_DIR/lib/asdf-plugins.sh)
-#
-#asdf install
-#asdf reshim
-#EOF
 
 if [ -w "$BP_DIR" ]; then
   echo "-----> Creating asdf export script"
-  # echo "export PATH=\"${ASDF_DIR}/shims:${ASDF_DIR}/bin:\$PATH\"" > "${BP_DIR}/export"
-  echo "export PATH=\"$(join ":" ${asdf_export_where_bins[@]}):\$PATH\"" > "${BP_DIR}/export"
+  cat << EOF > "${BP_DIR}/export"
+export PATH=\"${ASDF_DIR}/shims:${ASDF_DIR}/bin:\$PATH\"
+. "${ASDF_DIR}/asdf.sh"
+EOF
   cat "${BP_DIR}/export"
 fi
 
