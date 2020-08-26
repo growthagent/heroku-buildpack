@@ -144,6 +144,20 @@ if [ -d "${ASDF_CACHE_DIR}/plugins" ]; then
 else
   echo "no plugins"
 fi
+echo -n ">>> "
+if [ -d "${ASDF_CACHE_DIR}/bin" ]; then
+  echo "ls bin"
+  ls "${ASDF_DIR}/bin"
+else
+  echo "no bin"
+fi
+echo -n ">>> "
+if [ -d "${ASDF_CACHE_DIR}/shims" ]; then
+  echo "ls shims"
+  ls "${ASDF_DIR}/shims"
+else
+  echo "no shims"
+fi
 starz
 
 echo "-----> Creating asdf .profile.d script"
@@ -153,7 +167,7 @@ cat << EOF > "$BUILD_DIR/.profile.d/asdf.sh"
 # add asdf dirs to \$PATH
 export ASDF_DIR="\$HOME/${ASDF_REL_DIR}"
 export ASDF_DATA_DIR="\$HOME/${ASDF_REL_DIR}"
-export PATH="\$ASDF_DIR/shims:\$ASDF_DIR/bin:\$PATH"
+export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
 
 # bash completions for debugging
 [ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
