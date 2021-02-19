@@ -75,10 +75,8 @@ asdf install | indent
 
 echo "-----> Uninstall old asdf plugins versions"
 for plugin in "${!asdf_plugins[@]}"; do
-  echo "Uninstall $plugin "
-  asdf list "$plugin"
+  # keeping the last 3 versions
   for version in $(asdf list "$plugin" | head -n-3 | xargs); do
-    echo "Uninstall $plugin $version"
     asdf uninstall "$plugin" "${version}" | indent
   done
 done
