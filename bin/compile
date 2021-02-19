@@ -18,7 +18,7 @@ ASDF_CACHE_DIR="$CACHE_DIR/asdf"
 if [ -f "$BUILD_DIR/.tool-versions" ]; then
   ASDF_VERSION="$(awk -F ' ' '{ if (match($1, "asdf")) {print $2} }' "$BUILD_DIR/.tool-versions")"
 fi
-ASDF_VERSION=${ASDF_VERSION:-'0.8.0-rc1'}
+ASDF_VERSION=${ASDF_VERSION:-'0.8.0'}
 
 mkdir -p "$ASDF_DIR"
 
@@ -73,11 +73,19 @@ done
 echo "-----> Install asdf plugins"
 asdf install | indent
 
+echo "-----> Uninstall old asdf plugins versions"
+for plugin in "${!asdf_plugins[@]}"; do
+  for version in "$(asdf list "$plugin" | head -n-3)"; do
+    asdf uninstall "$plugin" "$version"
+  done
+done
+
 echo "-----> Coping asdf over to cache"
 cp -Trf "$ASDF_DIR" "${ASDF_CACHE_DIR}/"
 # we need to reshim later as the paths are pointing to the temp build dir
 rm -rf "${ASDF_CACHE_DIR}/shims"
 
+# TODO: just copy the necessary binaries to the directory, no `asdf`
 echo "-----> Creating asdf .profile.d script"
 ASDF_REL_DIR="$(realpath --relative-to="$BUILD_DIR" "$ASDF_DIR")"
 mkdir -p "$BUILD_DIR/.profile.d"
