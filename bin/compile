@@ -12,7 +12,9 @@ indent() {
   sed -u 's/^/       /'
 }
 
-export ASDF_DIR="$BUILD_DIR/.heroku/asdf"
+declare -i ASDF_PLUGIN_VERSIONS_TO_KEEP=4
+
+export ASDF_DIR="$PWD/asdf"
 export ASDF_DATA_DIR="$ASDF_DIR"
 ASDF_CACHE_DIR="$CACHE_DIR/asdf"
 if [ -f "$BUILD_DIR/.tool-versions" ]; then
@@ -20,7 +22,10 @@ if [ -f "$BUILD_DIR/.tool-versions" ]; then
 fi
 ASDF_VERSION=${ASDF_VERSION:-'0.8.0'}
 
-mkdir -p "$ASDF_DIR"
+# directory to export the binaries
+ASDF_INSTALLS="$BUILD_DIR/.heroku/asdf/"
+mkdir -p "$ASDF_INSTALLS"
+
 
 # Copying from cache
 if [ -d "$ASDF_CACHE_DIR" ]; then
@@ -45,11 +50,11 @@ if [ -z "$(command -v "asdf")" ]  || [ "$(asdf --version | awk -F '-' '{print $1
   . "$ASDF_DIR/asdf.sh"
 else
   echo "-----> Using asdf v${ASDF_VERSION}"
-  asdf reshim
+  asdf reshim | indent
 fi
 
 if ! [ -f "\$PWD/.tool-versions" ] && [ -f "$BUILD_DIR/.tool-versions" ]; then
-  echo "cp .tool-versions" | indent
+  echo "-----> cp .tool-versions"
   cp "$BUILD_DIR/.tool-versions" .
 fi
 
@@ -76,52 +81,53 @@ asdf install | indent
 echo "-----> Uninstall old asdf plugins versions"
 for plugin in "${!asdf_plugins[@]}"; do
   # keeping the last 3 versions
-  for version in $(asdf list "$plugin" | head -n-3 | xargs); do
+  for version in $(asdf list "$plugin" | head -n "$(($ASDF_PLUGIN_VERSIONS_TO_KEEP*-1))" | xargs); do
+    echo "Removing $plugin $version" | indent
     asdf uninstall "$plugin" "${version}" | indent
   done
 done
 
-echo "-----> Coping asdf over to cache"
-cp -Trf "$ASDF_DIR" "${ASDF_CACHE_DIR}/"
+
+echo "-----> Copying binaries from asdf and building \$PATH"
+ASDF_INSTALLS_REL_TO_BUILD="$(realpath --relative-to="$BUILD_DIR" "$ASDF_INSTALLS")"
+ASDF_PROFILE_PATHS=""
+ASDF_BUILD_PATHS=""
+for plugin in "${!asdf_plugins[@]}"; do
+  new_path="$ASDF_INSTALLS/$plugin"
+  cp -Trf "$(asdf where "$plugin")/" "$new_path" | indent
+
+  rel_path="\$HOME/$ASDF_INSTALLS_REL_TO_BUILD/$plugin/bin"
+  if [ -z "$ASDF_PROFILE_PATHS" ]; then
+    ASDF_PROFILE_PATHS=$rel_path
+  else
+    ASDF_PROFILE_PATHS="$rel_path:$ASDF_PROFILE_PATHS"
+  fi
+
+  if [ -z "$ASDF_BUILD_PATHS" ]; then
+    ASDF_BUILD_PATHS="$new_path/bin"
+  else
+    ASDF_BUILD_PATHS="$new_path/bin:$ASDF_BUILD_PATHS"
+  fi
+done
+
+echo "-----> Cleaning up and caching asdf"
 # we need to reshim later as the paths are pointing to the temp build dir
-rm -rf "${ASDF_CACHE_DIR}/shims"
+rm -rf "${ASDF_DIR}/shims" | indent
+cp -Trf "$ASDF_DIR" "${ASDF_CACHE_DIR}/" | indent
+rm -rf "${ASDF_DIR}" | indent
 
-# TODO: just copy the necessary binaries to the directory, no `asdf`
 echo "-----> Creating asdf .profile.d script"
-ASDF_REL_DIR="$(realpath --relative-to="$BUILD_DIR" "$ASDF_DIR")"
-mkdir -p "$BUILD_DIR/.profile.d"
+mkdir -p "$BUILD_DIR/.profile.d" | indent
 cat << EOF > "$BUILD_DIR/.profile.d/asdf.sh"
-# add asdf dirs to \$PATH
-export ASDF_DIR="\$HOME/${ASDF_REL_DIR}"
-export ASDF_DATA_DIR="\$HOME/${ASDF_REL_DIR}"
-export PATH="\$HOME/${ASDF_REL_DIR}/shims:\$HOME/${ASDF_REL_DIR}/bin:\$PATH"
-
-. "\$HOME/${ASDF_REL_DIR}/asdf.sh"
-
-# verify asdf is installed and reinstall missing plugins
-if ! command -v asdf > /dev/null 2>&1; then
-  echo "asdf not installed 🤔"
-  exit 1
-fi
-
-# bash completions for debugging
-[ -z "\$BASH_VERSION" ] && . \$HOME/${ASDF_REL_DIR}/completions/asdf.bash
-
-# make sure we start shims fresh
-rm -rf "\$HOME/${ASDF_REL_DIR}/shims"
-asdf install
-asdf reshim
+# add asdf binaries to \$PATH
+export PATH="$ASDF_PROFILE_PATHS:\$PATH"
 EOF
 
 
 if [ -w "$BP_DIR" ]; then
   echo "-----> Creating asdf export script"
   cat << EOF > "${BP_DIR}/export"
-export ASDF_DIR="${ASDF_DIR}"
-export ASDF_DATA_DIR="${ASDF_DIR}"
-export PATH="${ASDF_DIR}/shims:${ASDF_DIR}/bin:\$PATH"
-. "${ASDF_DIR}/asdf.sh"
-asdf reshim
+export PATH="${ASDF_BUILD_PATHS}:\$PATH"
 EOF
 fi
 
