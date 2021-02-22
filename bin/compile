@@ -118,8 +118,7 @@ rm -rf "${ASDF_DIR}" | indent
 
 echo "-----> Creating asdf .profile.d script"
 mkdir -p "$BUILD_DIR/.profile.d" | indent
-cat << EOF > "$BUILD_DIR/.profile.d/asdf.sh"
-# add asdf binaries to \$PATH
+cat << EOF > "$BUILD_DIR/.profile.d/asdf-bins.sh"
 export PATH="$ASDF_PROFILE_PATHS:\$PATH"
 EOF
 
@@ -128,6 +127,7 @@ if [ -w "$BP_DIR" ]; then
   echo "-----> Creating asdf export script"
   cat << EOF > "${BP_DIR}/export"
 export PATH="${ASDF_BUILD_PATHS}:\$PATH"
+export ELM_HOME="\${XDG_CACHE_HOME:-${CACHE_DIR}}"
 EOF
 fi
 
