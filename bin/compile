@@ -96,6 +96,11 @@ for plugin in "${!asdf_plugins[@]}"; do
   new_path="$ASDF_INSTALLS/$plugin"
   cp -Trf "$(asdf where "$plugin")/" "$new_path" | indent
 
+  if [ "$plugin" = "purescript-zephyr" ]; then
+    echo "Patching zephyr" | indent
+    patchelf --replace-needed "libtinfo.so.5" "libtinfo.so.6" "$new_path/bin/zephyr" | indent
+  fi
+
   rel_path="\$HOME/$ASDF_INSTALLS_REL_TO_BUILD/$plugin/bin"
   if [ -z "$ASDF_PROFILE_PATHS" ]; then
     ASDF_PROFILE_PATHS=$rel_path
@@ -116,18 +121,27 @@ rm -rf "${ASDF_DIR}/shims" | indent
 cp -Trf "$ASDF_DIR" "${ASDF_CACHE_DIR}/" | indent
 rm -rf "${ASDF_DIR}" | indent
 
-echo "-----> Creating asdf .profile.d script"
+echo "-----> Creating .profile.d scripts"
 mkdir -p "$BUILD_DIR/.profile.d" | indent
 cat << EOF > "$BUILD_DIR/.profile.d/asdf-bins.sh"
 export PATH="$ASDF_PROFILE_PATHS:\$PATH"
+# patchelf --set-soname "libtinfo.so.5" "/app/.apt/lib/x86_64-linux-gnu/libtinfo.so.5" \$(which zephyr)
+EOF
+cat << EOF > "$BUILD_DIR/.profile.d/000_apt-libs.sh"
+export LD_LIBRARY_PATH="\$HOME/.apt/usr/local/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib/x86_64-linux-gnu:\$HOME/.apt/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib:\$HOME/.apt/lib:\$LD_LIBRARY_PATH"
+export LIBRARY_PATH="\$HOME/.apt/usr/local/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib/x86_64-linux-gnu:\$HOME/.apt/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib:\$HOME/.apt/lib:\$LIBRARY_PATH"
+export INCLUDE_PATH="\$HOME/.apt/usr/local/include:\$HOME/.apt/usr/include:\$HOME/.apt/include:\$INCLUDE_PATH"
 EOF
 
 
 if [ -w "$BP_DIR" ]; then
-  echo "-----> Creating asdf export script"
+  echo "-----> Creating export script"
   cat << EOF > "${BP_DIR}/export"
 export PATH="${ASDF_BUILD_PATHS}:\$PATH"
 export ELM_HOME="\${XDG_CACHE_HOME:-${CACHE_DIR}}"
+export LD_LIBRARY_PATH="\$HOME/.apt/usr/local/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib/x86_64-linux-gnu:\$HOME/.apt/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib:\$HOME/.apt/lib:\$LD_LIBRARY_PATH"
+export LIBRARY_PATH="\$HOME/.apt/usr/local/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib/x86_64-linux-gnu:\$HOME/.apt/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib:\$HOME/.apt/lib:\$LIBRARY_PATH"
+export INCLUDE_PATH="\$HOME/.apt/usr/local/include:\$HOME/.apt/usr/include:\$HOME/.apt/include:\$INCLUDE_PATH"
 EOF
 fi
 
