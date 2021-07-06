@@ -96,9 +96,13 @@ for plugin in "${!asdf_plugins[@]}"; do
   new_path="$ASDF_INSTALLS/$plugin"
   cp -Trf "$(asdf where "$plugin")/" "$new_path" | indent
 
-  if [ "$plugin" = "purescript-zephyr" ]; then
-    echo "Patching zephyr" | indent
-    patchelf --replace-needed "libtinfo.so.5" "libtinfo.so.6" "$new_path/bin/zephyr" | indent
+  if [ -f "$ENV_DIR/PATCH_ZEPHYR" ]; then
+    if [ "$plugin" = "purescript-zephyr" ]; then
+      echo "Patching zephyr" | indent
+      patchelf --replace-needed "libtinfo.so.5" "libtinfo.so.6" "$new_path/bin/zephyr" | indent
+    fi
+  else
+    echo "Not patching zephyr" | indent
   fi
 
   rel_path="\$HOME/$ASDF_INSTALLS_REL_TO_BUILD/$plugin/bin"
