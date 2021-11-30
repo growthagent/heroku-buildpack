@@ -42,6 +42,7 @@ else
   mkdir -p "$ASDF_CACHE_DIR"
 fi
 
+
 # if missing/fresh or we sourced asdf’s shell script, and we don’t have an asdf, time to (re)install
 if [ -z "$(command -v "asdf")" ]  || [ "$(asdf --version | awk -F '-' '{print $1}')" != "v${ASDF_VERSION}" ]; then
   echo "-----> Installing asdf v${ASDF_VERSION}"
@@ -57,6 +58,7 @@ if ! [ -f "\$PWD/.tool-versions" ] && [ -f "$BUILD_DIR/.tool-versions" ]; then
   echo "-----> cp .tool-versions"
   cp "$BUILD_DIR/.tool-versions" .
 fi
+
 
 # ([plugin]=repo)
 declare -r -A asdf_plugins=(
@@ -77,6 +79,7 @@ done
 
 echo "-----> Install asdf plugins"
 asdf install | indent
+
 
 echo "-----> Uninstall old asdf plugins versions"
 for plugin in "${!asdf_plugins[@]}"; do
@@ -116,18 +119,21 @@ for plugin in "${!asdf_plugins[@]}"; do
   fi
 done
 
+
 echo "-----> Cleaning up and caching asdf"
 # we need to reshim later as the paths are pointing to the temp build dir
 rm -rf "${ASDF_DIR}/shims" | indent
 cp -Trf "$ASDF_DIR" "${ASDF_CACHE_DIR}/" | indent
 rm -rf "${ASDF_DIR}" | indent
 
+
 echo "-----> Creating .profile.d scripts"
 mkdir -p "$BUILD_DIR/.profile.d" | indent
+
 cat << EOF > "$BUILD_DIR/.profile.d/asdf-bins.sh"
 export PATH="$ASDF_PROFILE_PATHS:\$PATH"
-# patchelf --set-soname "libtinfo.so.5" "/app/.apt/lib/x86_64-linux-gnu/libtinfo.so.5" \$(which zephyr)
 EOF
+
 cat << EOF > "$BUILD_DIR/.profile.d/000_apt-libs.sh"
 export LD_LIBRARY_PATH="\$HOME/.apt/usr/local/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib/x86_64-linux-gnu:\$HOME/.apt/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib:\$HOME/.apt/lib:\$LD_LIBRARY_PATH"
 export LIBRARY_PATH="\$HOME/.apt/usr/local/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib/x86_64-linux-gnu:\$HOME/.apt/lib/x86_64-linux-gnu:\$HOME/.apt/usr/lib:\$HOME/.apt/lib:\$LIBRARY_PATH"

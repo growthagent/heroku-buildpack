@@ -1,0 +1,20 @@
+Instateam’s Buildpack
+=====================
+:abbr-CI: pass:[<abbr title="continuous integration">CI</abbr>]
+
+== Purpose
+
+Our build requires tools/binaries/libraries that are not available through Ruby Gems or NPM or in Ubuntu’s package managers + `Aptfile` to get extra packages. This buildpack will get us those tools. https://asdf-vm.com/[`asdf`] is our package manager for these binary because of the easy of use and easy of creating a simple Bash script to fetch tools based on versions. `asdf` also has versioning through a project’s `.tool-versions` file which can be used for both users of in a dev environment and {abbr-CI}. In a tiny extension of this, our `.tool-versions` file also can include a version for `asdf` itself to be used.
+
+== How does it work?
+
+We checkout `asdf` from the tag listed in `.tool-versions`. `asdf` plugins are added, updated, and then pointing to the main project’s `.tool-versions` to download the matching binaries. It then proceeds to help later buildpacks with with the `$PATH` and `$LD_LIBRARY_PATH` (can be used to get libraries from that `Aptfile`) by passing along exported variables. This lets other tools along the line call our tools.
+
+`$ELM_HOME` is also set to the something Heroku can cache (https://github.com/elm/compiler/issues/1901[if Elm had used XDG], this wouldn’t be an issue).
+
+IMPORTANT: non-default plugins _must_ be added to this buildpack or it can’t be picked up
+
+== What can be improved
+
+* `git clone` could be changed to a `wget` to the `git.com/…/tarball` and extracted. Cloning is slow.
+* Are the `$LD_LIBARY_PATH` additions necessary?
