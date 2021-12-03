@@ -63,7 +63,7 @@ fi
 # ([plugin]=repo)
 declare -r -A asdf_plugins=(
   [dhall]=""
-  [purescript-zephyr]="https://github.com/instateam/asdf-purescript-zephyr.git"
+  [purescript-zephyr]="https://github.com/growthagent/asdf-purescript-zephyr.git"
 )
 
 for plugin in "${!asdf_plugins[@]}"; do

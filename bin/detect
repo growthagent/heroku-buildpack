@@ -6,7 +6,7 @@ set -eu
 BUILD_DIR=${1:-}
 
 if [ -f $1/.tool-versions ]; then
-  echo "Instateam’s buildpack"
+  echo "Growth Agent’s buildpack"
   exit 0
 else
   exit 1

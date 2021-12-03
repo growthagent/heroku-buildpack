@@ -1,4 +1,4 @@
-Instateam’s Buildpack
+Growth Agent’s Buildpack
 =====================
 :abbr-CI: pass:[<abbr title="continuous integration">CI</abbr>]
 
